@@ -38,15 +38,18 @@ public class MemesengerActivity extends Activity {
     SeekBar seekBarFont;
 
     int[] COLORS = {Color.BLUE, Color.CYAN, Color.DKGRAY, Color.BLACK, Color.LTGRAY, Color.GRAY, Color.GREEN, Color.MAGENTA, Color.RED, Color.WHITE, Color.YELLOW};
-    int BRUSH_COLOR = Color.BLACK;
+    int BRUSH_COLOR = 3;
     int BRUSH_SIZE = 5;
 
-    int COLOR_INDEX = 10;
+    int COLOR_INDEX = 3;
+    int SIZE_INDEX = 5;
+
+    Boolean colorButtonClicked = false;
+    Boolean sizeButtonClicked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_memesenger);
@@ -66,7 +69,6 @@ public class MemesengerActivity extends Activity {
             metrics = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-//            paintView.invalidate();
             paintView.init(metrics,BRUSH_COLOR,BRUSH_SIZE);
             paintView.normal();
         }catch (Exception e){
@@ -111,78 +113,95 @@ public class MemesengerActivity extends Activity {
     }
 
     public void setColor(View view) {
-
-        Log.i(">> COLOR INDEX: ",""+COLOR_INDEX);
-        seekBarFont.setProgress(COLOR_INDEX);
-        paintView.init(metrics,COLORS[COLOR_INDEX],BRUSH_SIZE);
-        Shader shader = new LinearGradient(0, 0, 800.f, 0.0f, COLORS,null, Shader.TileMode.CLAMP);
-
-        ShapeDrawable shape = new ShapeDrawable(new RectShape());
-        shape.getPaint().setShader(shader);
-
-        seekBarFont.setVisibility(View.VISIBLE);
-        seekBarFont.setProgressDrawable(shape);
-
-        seekBarFont.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int index = COLOR_INDEX;
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-//                index = seekBar.getProgress();
-//                BRUSH_COLOR = COLORS[index];
-//                paintView.init(metrics,BRUSH_COLOR,BRUSH_SIZE);
-
-                Log.i(">> COLOR INDEX",""+progress  );
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                index = seekBar.getProgress();
-                BRUSH_COLOR = COLORS[index];
-                paintView.init(metrics,BRUSH_COLOR,BRUSH_SIZE);
-                Log.i(">> COLOR INDEX",""+index);
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                int index = seekBar.getProgress();
-                try {
-                    BRUSH_COLOR = COLORS[index];
-                    paintView.init(metrics,BRUSH_COLOR,BRUSH_SIZE);
-
-                }catch (Exception e){
-                    Log.e(">> SET COLOR",""+e);
-                }
-                COLOR_INDEX = index;
-            }
+        if (colorButtonClicked) {
+            seekBarFont.setVisibility(View.GONE);
+            colorButtonClicked = false;
+            sizeButtonClicked = false;
         }
-        );
+        else {
+            seekBarFont.setVisibility(View.VISIBLE);
+            colorButtonClicked = true;
+
+            seekBarFont.setMax(10);
+
+            Log.i(">> COLOR INDEX: ", "" + COLOR_INDEX);
+            seekBarFont.setProgress(COLOR_INDEX);
+            paintView.init(metrics, COLORS[COLOR_INDEX], BRUSH_SIZE);
+            Shader shader = new LinearGradient(0, 0, 800.f, 0.0f, COLORS, null, Shader.TileMode.CLAMP);
+
+            ShapeDrawable shape = new ShapeDrawable(new RectShape());
+            shape.getPaint().setShader(shader);
+
+            seekBarFont.setProgressDrawable(shape);
+
+            seekBarFont.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    int index = seekBar.getProgress();
+                    try {
+                        BRUSH_COLOR = COLORS[index];
+                        paintView.init(metrics, BRUSH_COLOR, BRUSH_SIZE);
+                        setColorButton.setTextColor(BRUSH_COLOR);
+                        Log.i(">> SET COLOR", "INDEX: " + index);
+                        COLOR_INDEX = index;
+                    } catch (Exception e) {
+                        Log.e(">> SET COLOR", "INDEX: " + index + " Error :" + e);
+                    }
+                }
+            });
+        }
     }
 
     public void setSize(View view) {
-        Log.i(">> C Index",""+COLOR_INDEX);
-        Shader shader = new LinearGradient(0, 0, 800.f, 0.0f, Color.WHITE,Color.BLACK, Shader.TileMode.CLAMP);
+        if (sizeButtonClicked) {
+            seekBarFont.setVisibility(View.GONE);
+            sizeButtonClicked = false;
+            colorButtonClicked = false;
+        }
+        else {
+            seekBarFont.setVisibility(View.VISIBLE);
+            sizeButtonClicked = true;
 
-        ShapeDrawable shape = new ShapeDrawable(new RectShape());
-        shape.getPaint().setShader(shader);
+            seekBarFont.setMax(30);
 
-        seekBarFont.setVisibility(View.VISIBLE);
-        seekBarFont.setProgressDrawable(shape);
-        seekBarFont.setMax(30);
+            seekBarFont.setProgress(SIZE_INDEX);
 
-        seekBarFont.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            }
+            Shader shader = new LinearGradient(0, 0, 800.f, 0.0f, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
+            ShapeDrawable shape = new ShapeDrawable(new RectShape());
+            shape.getPaint().setShader(shader);
 
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                BRUSH_SIZE = seekBar.getProgress();
-                paintView.init(metrics,BRUSH_COLOR,BRUSH_SIZE);
-            }
-        });
+            seekBarFont.setProgressDrawable(shape);
+
+            seekBarFont.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    try {
+                        BRUSH_SIZE = seekBar.getProgress();
+                        paintView.init(metrics, BRUSH_COLOR, BRUSH_SIZE);
+                        Log.i(">> SIZE:", "" +BRUSH_SIZE);
+                        SIZE_INDEX = BRUSH_SIZE;
+                    } catch (Exception e) {
+                        Log.e(">> SET SIZE:", "" + e);
+                    }
+                }
+            });
+        }
     }
 }
