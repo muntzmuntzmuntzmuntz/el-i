@@ -52,7 +52,7 @@ public class MemesengerActivity extends Activity {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_memesenger);
+        setContentView(R.layout.activity_memepaint);
 
         setColorButton = findViewById(R.id.brush_color);
         setSizeButton = findViewById(R.id.brush_size);
@@ -69,7 +69,7 @@ public class MemesengerActivity extends Activity {
             metrics = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-            paintView.init(metrics,BRUSH_COLOR,BRUSH_SIZE);
+            paintView.init(metrics,COLORS[BRUSH_COLOR],BRUSH_SIZE);
             paintView.normal();
         }catch (Exception e){
             Log.e(">> GG", "GG" +e);
@@ -192,9 +192,9 @@ public class MemesengerActivity extends Activity {
 
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
+                    BRUSH_SIZE = seekBar.getProgress();
                     try {
-                        BRUSH_SIZE = seekBar.getProgress();
-                        paintView.init(metrics, BRUSH_COLOR, BRUSH_SIZE);
+                        paintView.init(metrics, COLORS[COLOR_INDEX], BRUSH_SIZE);
                         Log.i(">> SIZE:", "" +BRUSH_SIZE);
                         SIZE_INDEX = BRUSH_SIZE;
                     } catch (Exception e) {
