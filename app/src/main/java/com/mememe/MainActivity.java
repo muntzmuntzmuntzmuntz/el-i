@@ -1,6 +1,7 @@
 package com.mememe;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +36,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainActivity extends Activity {
 //    Bundle user = new Bundle();
 
+    Dialog dialog;
+
     User user;
     private LoginButton loginButton;
     private TextView nameText, emailText;
@@ -45,8 +48,14 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.login_popup_window);
 
+        dialog = new Dialog(this);
+        showDialog();
+    }
+
+    public void showDialog(){
+        dialog.setContentView(R.layout.login_popup_window);
         loginButton = findViewById(R.id.login_button);
 //        nameText = findViewById(R.id.profile_name);
 //        emailText = findViewById(R.id.profile_email);

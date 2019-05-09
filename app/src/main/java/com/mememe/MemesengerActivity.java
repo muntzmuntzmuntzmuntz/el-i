@@ -23,10 +23,15 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.facebook.login.LoginManager;
 import com.mememe.models.User;
+import com.mememe.processors.Brush;
+import com.mememe.processors.Brush_Size;
+import com.mememe.processors.Profile;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MemesengerActivity extends Activity {
+    Brush brush;
+
     User user;
 
     private CircleImageView circleImageView;
@@ -61,8 +66,10 @@ public class MemesengerActivity extends Activity {
         circleImageView = findViewById(R.id.profile_image);
         seekBarFont = findViewById(R.id.seekbar_font);
 
-        user = getIntent().getParcelableExtra("user");
-        checkUser();
+        brush = new Brush(seekBarFont);
+
+//        user = getIntent().getParcelableExtra("user");
+//        checkUser();
 
         paintView = findViewById(R.id.paintView);
         try{
@@ -79,14 +86,23 @@ public class MemesengerActivity extends Activity {
     }
 
     public void profileOnClick(View v){
-        logout();
+        Toast.makeText(MemesengerActivity.this,"USER: GGG",Toast.LENGTH_LONG).show();
+        new Profile().showPopup();
+//        logout();
     }
 
     public void checkUser(){
-        Toast.makeText(MemesengerActivity.this,"USER: "+user.getName(),Toast.LENGTH_LONG).show();
-        if (!user.getId().equals("")){
-            Glide.with(MemesengerActivity.this).load(user.getImage_url()).into(circleImageView);
-        }
+        new Profile().showPopup();
+//        Toast.makeText(MemesengerActivity.this,"USER: GGG",Toast.LENGTH_LONG).show();
+//        Intent intent = new Intent(MemesengerActivity.this,MainActivity.class);
+//        Toast.makeText(MemesengerActivity.this,"USER: "+user.getName(),Toast.LENGTH_LONG).show();
+//        if (!user.getId().equals("")){
+//            Glide.with(MemesengerActivity.this).load(user.getImage_url()).into(circleImageView);
+//        }else {
+//            Toast.makeText(MemesengerActivity.this,"USER: "+user.getName(),Toast.LENGTH_LONG).show();
+//
+////            Glide.with(MemesengerActivity.this).load("N").into(circleImageView);
+//        }
     }
 
     public void logout(){
@@ -112,11 +128,15 @@ public class MemesengerActivity extends Activity {
         dialog.show();
     }
 
+    public void showAccountInfo(){
+
+    }
+
     public void setColor(View view) {
+        sizeButtonClicked = false;
         if (colorButtonClicked) {
             seekBarFont.setVisibility(View.GONE);
             colorButtonClicked = false;
-            sizeButtonClicked = false;
         }
         else {
             seekBarFont.setVisibility(View.VISIBLE);
@@ -158,50 +178,60 @@ public class MemesengerActivity extends Activity {
                 }
             });
         }
+        paintView.setEnabled(true);
     }
 
     public void setSize(View view) {
+        colorButtonClicked = false;
         if (sizeButtonClicked) {
             seekBarFont.setVisibility(View.GONE);
             sizeButtonClicked = false;
-            colorButtonClicked = false;
+
         }
         else {
-            seekBarFont.setVisibility(View.VISIBLE);
+            BRUSH_SIZE = brush.getSize();
             sizeButtonClicked = true;
 
-            seekBarFont.setMax(30);
+            paintView.init(metrics, COLORS[COLOR_INDEX],BRUSH_SIZE);
 
-            seekBarFont.setProgress(SIZE_INDEX);
-
-            Shader shader = new LinearGradient(0, 0, 800.f, 0.0f, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
-
-            ShapeDrawable shape = new ShapeDrawable(new RectShape());
-            shape.getPaint().setShader(shader);
-
-            seekBarFont.setProgressDrawable(shape);
-
-            seekBarFont.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                }
-
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-                }
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-                    BRUSH_SIZE = seekBar.getProgress();
-                    try {
-                        paintView.init(metrics, COLORS[COLOR_INDEX], BRUSH_SIZE);
-                        Log.i(">> SIZE:", "" +BRUSH_SIZE);
-                        SIZE_INDEX = BRUSH_SIZE;
-                    } catch (Exception e) {
-                        Log.e(">> SET SIZE:", "" + e);
-                    }
-                }
-            });
+//            seekBarFont.setVisibility(View.VISIBLE);
+//            sizeButtonClicked = true;
+//
+//            seekBarFont.setMax(30);
+//
+//            seekBarFont.setProgress(SIZE_INDEX);
+//
+//            Shader shader = new LinearGradient(0, 0, 800.f, 0.0f, Color.WHITE, Color.BLACK, Shader.TileMode.CLAMP);
+//
+//            ShapeDrawable shape = new ShapeDrawable(new RectShape());
+//            shape.getPaint().setShader(shader);
+//
+//            seekBarFont.setProgressDrawable(shape);
+//
+//            seekBarFont.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//                @Override
+//                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                }
+//
+//                @Override
+//                public void onStartTrackingTouch(SeekBar seekBar) {
+//                }
+//
+//                @Override
+//                public void onStopTrackingTouch(SeekBar seekBar) {
+//                    BRUSH_SIZE = seekBar.getProgress();
+//                    try {
+//                        paintView.init(metrics, COLORS[COLOR_INDEX], BRUSH_SIZE);
+//                        Log.i(">> SIZE:", "" +BRUSH_SIZE);
+//                        SIZE_INDEX = BRUSH_SIZE;
+//                    } catch (Exception e) {
+//                        Log.e(">> SET SIZE:", "" + e);
+//                    }
+//                }
+//            });
         }
+        paintView.setEnabled(true);
     }
+
+
 }
